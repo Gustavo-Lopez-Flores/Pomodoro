@@ -1,7 +1,22 @@
 package com.example.pomodoro;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.accessibilityservice.AccessibilityService;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -13,9 +28,9 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     /* Timer do Pomodoro */
-    private static long POMODORO_TIME = 1500000; // 25min
-    private static long LONG_BREAK_TIME = 600000; // 10min
-    private static long SHORT_BREAK_TIME = 300000; // 5min
+    private static long POMODORO_TIME = 12000; // 25min
+    private static long LONG_BREAK_TIME = 6000; // 10min
+    private static long SHORT_BREAK_TIME = 3000; // 5min
     private int statusModeTimer = 0;
 
     /* Text e Button */
@@ -72,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onFinish() {
+                messageNotification();
                 if(statusModeTimer == 0){
                     statusModeTimer++;
                 }else{
@@ -117,4 +133,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    private void messageNotification(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Android Api >= 26
+            final String id = "NOTIFICATION";
+            NotificationChannel channel = new NotificationChannel(id,"Timer", NotificationManager.IMPORTANCE_HIGH);
+
+            getSystemService(NotificationManager.class).createNotificationChannel(channel);
+            Notification.Builder notification = new Notification.Builder(this, id)
+                    .setContentTitle("SESSÃO ENCERRADA")
+                    .setContentText("Tempo esgotado")
+                    .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_foreground))
+                    .setAutoCancel(true);
+            NotificationManagerCompat.from(this).notify(1, notification.build());
+        }
+    }
+
 }
