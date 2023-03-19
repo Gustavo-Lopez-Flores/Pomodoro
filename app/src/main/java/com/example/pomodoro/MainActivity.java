@@ -1,24 +1,16 @@
 package com.example.pomodoro;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
-import android.accessibilityservice.AccessibilityService;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -78,6 +70,24 @@ public class MainActivity extends AppCompatActivity {
         timeCounter();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.item_1) {
+            return true;
+        } else if (id == R.id.item_2) {
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void startTimer(){
         tempoCronometro = new CountDownTimer(tempoMilissegundos, 1000){
             @Override
@@ -135,6 +145,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void messageNotification(){
+        String titulo = new String();
+        String texto = new String();
+        switch (statusModeTimer) {
+            case 0:
+                titulo = "Pomodoro Concluído";
+                texto = "Hora de fazer uma pausa";
+                break;
+            case 1:
+                titulo = "Descanso feito";
+                texto = "Hora de voltar a rotina";
+                break;
+            case 2:
+                titulo = "O descanso foi bom";
+                texto = "Mas o dia não acabou";
+                break;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Android Api >= 26
             final String id = "NOTIFICATION";
@@ -142,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
             Notification.Builder notification = new Notification.Builder(this, id)
-                    .setContentTitle("SESSÃO ENCERRADA")
-                    .setContentText("Tempo esgotado")
+                    .setContentTitle(titulo)
+                    .setContentText(texto)
                     .setSmallIcon(R.mipmap.ic_launcher_foreground)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_foreground))
                     .setAutoCancel(true);

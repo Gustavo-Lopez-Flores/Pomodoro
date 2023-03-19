@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Pomodoro</string>
+    <string name="item_1">Alterar Timers</string>>
+    <string name="item_2">Histórico do Dia</string>>
 </resources>
