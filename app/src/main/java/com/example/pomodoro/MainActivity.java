@@ -21,9 +21,9 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     /* Timer do Pomodoro */
-    private static long POMODORO_TIME = 12000; // 25min
-    private static long LONG_BREAK_TIME = 6000; // 10min
-    private static long SHORT_BREAK_TIME = 3000; // 5min
+    private static long POMODORO_TIME = 1500000; // 25min
+    private static long LONG_BREAK_TIME = 600000; // 10min
+    private static long SHORT_BREAK_TIME = 300000; // 5min
 
     /* Status Start/Pause e Timer */
     private boolean statusStartPause;
