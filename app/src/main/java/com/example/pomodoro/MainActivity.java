@@ -14,7 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import java.time.LocalDate;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
     private static long POMODORO_TIME = 12000; // 25min
     private static long LONG_BREAK_TIME = 6000; // 10min
     private static long SHORT_BREAK_TIME = 3000; // 5min
+
+    /* Status Start/Pause e Timer */
+    private boolean statusStartPause;
     private int statusModeTimer = 0;
 
     /* Text e Button */
@@ -33,8 +36,13 @@ public class MainActivity extends AppCompatActivity {
 
     /* Contador */
     private CountDownTimer tempoCronometro;
-    private boolean statusStartPause;
     private long tempoMilissegundos = POMODORO_TIME;
+    private int pomodoros = 0;
+    private int pomodoros_day = 0;
+
+    /* Datas */
+    String nowPomodoro = new String();
+    String lastPomodoro = new String();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,11 +106,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 messageNotification();
-                if(statusModeTimer == 0){
-                    statusModeTimer++;
-                }else{
-                    statusModeTimer=0;
-                }
                 seeStatus();
                 timeCounter();
                 statusStartPause = false;
@@ -147,19 +150,42 @@ public class MainActivity extends AppCompatActivity {
     private void messageNotification(){
         String titulo = new String();
         String texto = new String();
+        pomodoros++;
         switch (statusModeTimer) {
             case 0:
-                titulo = "Pomodoro Concluído";
-                texto = "Hora de fazer uma pausa";
-                break;
+                switch (pomodoros){
+                    case 1:
+                        titulo = "1 Pomodoro Concluído - Boa";
+                    break;
+                    case 2:
+                        titulo = "2 Pomodoros Concluídos - Muito Bem";
+                    break;
+                    case 3:
+                        titulo = "3 Pomodoros Concluídos - Tens potencial";
+                    break;
+                    case 4:
+                        titulo = "4 Pomodoros Concluídos - Parabéns";
+                    break;
+                }
+                if(pomodoros == 4){
+                    texto = "Descanse mais, você merece";
+                    pomodoros=0;
+                    statusModeTimer = 2;
+                }else{
+                    texto = "Hora de fazer uma pausa rápida";
+                    statusModeTimer = 1;
+                }
+            break;
             case 1:
                 titulo = "Descanso feito";
                 texto = "Hora de voltar a rotina";
-                break;
+                statusModeTimer = 0;
+            break;
             case 2:
-                titulo = "O descanso foi bom";
-                texto = "Mas o dia não acabou";
-                break;
+                titulo = "Descansou bastante";
+                texto = "Hora de voltar a rotina";
+                statusModeTimer = 0;
+            break;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Android Api >= 26
@@ -177,4 +203,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    private void checkDay(){
+        if(pomodoros_day == 0){
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                LocalDate hoje = LocalDate.now();
+                lastPomodoro = hoje.toString();
+                System.out.println(lastPomodoro);
+            }
+            pomodoros_day++;
+        }else{
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                LocalDate agora = LocalDate.now();
+                nowPomodoro = agora.toString();
+                System.out.println(lastPomodoro);
+            }
+            if(nowPomodoro.equals(lastPomodoro)){
+                pomodoros_day++;
+                System.out.printf("Mesmo dia\n");
+            }else{
+                pomodoros_day = 0;
+                System.out.printf("Dia Zero\n");
+            }
+        }
+        System.out.println("%d pomodoros\n" + pomodoros_day);
+    }
+    */
 }
