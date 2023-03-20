@@ -5,6 +5,7 @@ import androidx.core.app.NotificationManagerCompat;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private int statusModeTimer = 0;
 
     /* Text e Button */
+    private TextView textNumberDay;
     private TextView textTimer;
     private TextView textStatusMode;
     private Button buttonStartPause;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textTimer = findViewById(R.id.textTimer);
+        textNumberDay = findViewById(R.id.textNumberDay);
         textStatusMode = findViewById(R.id.textStatusMode);
         buttonStartPause = findViewById(R.id.buttonStartPause);
         buttonStatusMode = findViewById(R.id.buttonStatusMode);
@@ -78,24 +81,6 @@ public class MainActivity extends AppCompatActivity {
         timeCounter();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.item_1) {
-            return true;
-        } else if (id == R.id.item_2) {
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void startTimer(){
         tempoCronometro = new CountDownTimer(tempoMilissegundos, 1000){
             @Override
@@ -111,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 statusStartPause = false;
                 buttonStartPause.setText("INICIAR");
                 buttonStatusMode.setVisibility(View.VISIBLE);
+                textNumberDay.setText("" + pomodoros_day);
             }
         }.start();
         statusStartPause = true;
@@ -153,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         pomodoros++;
         switch (statusModeTimer) {
             case 0:
+                checkDay();
                 switch (pomodoros){
                     case 1:
                         titulo = "1 Pomodoro Concluído - Boa";
@@ -203,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
+
     private void checkDay(){
         if(pomodoros_day == 0){
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -216,17 +203,15 @@ public class MainActivity extends AppCompatActivity {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 LocalDate agora = LocalDate.now();
                 nowPomodoro = agora.toString();
-                System.out.println(lastPomodoro);
+                System.out.println(nowPomodoro);
             }
             if(nowPomodoro.equals(lastPomodoro)){
                 pomodoros_day++;
-                System.out.printf("Mesmo dia\n");
             }else{
                 pomodoros_day = 0;
-                System.out.printf("Dia Zero\n");
+                lastPomodoro = nowPomodoro;
             }
         }
-        System.out.println("%d pomodoros\n" + pomodoros_day);
     }
-    */
+
 }
