@@ -136,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
     private void messageNotification(){
         String titulo = new String();
         String texto = new String();
-        pomodoros++;
         switch (statusModeTimer) {
             case 0:
+                pomodoros++;
                 checkDay();
                 switch (pomodoros){
                     case 1:
