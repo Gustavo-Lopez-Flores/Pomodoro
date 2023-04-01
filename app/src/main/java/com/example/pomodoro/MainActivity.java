@@ -5,13 +5,10 @@ import androidx.core.app.NotificationManagerCompat;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textStatusMode;
     private Button buttonStartPause;
     private Button buttonStatusMode;
+    private Button buttonMore;
+    private Button buttonLess;
 
     /* Contador */
     private CountDownTimer tempoCronometro;
@@ -56,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         textStatusMode = findViewById(R.id.textStatusMode);
         buttonStartPause = findViewById(R.id.buttonStartPause);
         buttonStatusMode = findViewById(R.id.buttonStatusMode);
+        buttonMore = findViewById(R.id.buttonMore);
+        buttonLess = findViewById(R.id.buttonLess);
 
         buttonStatusMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +64,28 @@ public class MainActivity extends AppCompatActivity {
                 statusModeTimer = (statusModeTimer+1) % 3;
                 seeStatus();
                 timeCounter();
+            }
+        });
+
+        buttonMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                if(POMODORO_TIME <= 3540000){
+                    POMODORO_TIME += 60000;
+                    tempoMilissegundos = POMODORO_TIME;
+                    timeCounter();
+                }
+            }
+        });
+
+        buttonLess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                if(POMODORO_TIME > 60000){
+                    POMODORO_TIME -= 60000;
+                    tempoMilissegundos = POMODORO_TIME;
+                    timeCounter();
+                }
             }
         });
 
@@ -119,14 +142,20 @@ public class MainActivity extends AppCompatActivity {
     private void seeStatus(){
         switch (statusModeTimer){
             case 0:
+                buttonMore.setVisibility(View.VISIBLE);
+                buttonLess.setVisibility(View.VISIBLE);
                 textStatusMode.setText("POMODORO");
                 tempoMilissegundos = POMODORO_TIME;
                 break;
             case 1:
+                buttonMore.setVisibility(View.INVISIBLE);
+                buttonLess.setVisibility(View.INVISIBLE);
                 textStatusMode.setText("PAUSA CURTA");
                 tempoMilissegundos = SHORT_BREAK_TIME;
                 break;
             case 2:
+                buttonMore.setVisibility(View.INVISIBLE);
+                buttonLess.setVisibility(View.INVISIBLE);
                 textStatusMode.setText("PAUSA LONGA");
                 tempoMilissegundos = LONG_BREAK_TIME;
                 break;
@@ -189,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
             NotificationManagerCompat.from(this).notify(1, notification.build());
         }
     }
-
 
     private void checkDay(){
         if(pomodoros_day == 0){
